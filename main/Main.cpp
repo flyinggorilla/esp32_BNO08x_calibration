@@ -26,6 +26,8 @@ static const char tag[] = "Main";
 #define BNO08X_TIME_BETWEEN_REPORTS (200 * 1000UL) // 200ms
 #define BNO08X_INSTALL_GLOBAL_ISR true            // other task will already have installed the ISR before this task starts
 
+#define USE_KCONFIG 1
+#if USE_KCONFIG == 0
 static BNO08x bno(bno08x_config_t(SPI2_HOST,
     CONFIG_BNO086_SPI2_DATA_OUT,
     CONFIG_BNO086_SPI2_DATA_IN,
@@ -35,6 +37,9 @@ static BNO08x bno(bno08x_config_t(SPI2_HOST,
     CONFIG_BNO086_RESET_PIN,
     BNO08X_SPI_FREQ,
     BNO08X_INSTALL_GLOBAL_ISR));
+#else
+static BNO08x bno;
+#endif
 
 
 extern "C"
@@ -136,17 +141,17 @@ void Main::Run()
         ESP_LOGE(tag, "BNO08x initialization failed");
     }
 
-    // if (bno.hard_reset()) // delay is built
-    // {
-    //     ESP_LOGI(tag, "BNO08x hard reset done");
-    // }
-    // else
-    // {
-    //     ESP_LOGE(tag, "BNO08x hard reset failed");
-    //     return;
-    // }
+    if (bno.hard_reset()) // delay is built
+    {
+        ESP_LOGI(tag, "BNO08x hard reset done");
+    }
+    else
+    {
+        ESP_LOGE(tag, "BNO08x hard reset failed");
+        return;
+    }
 
-    // vTaskDelay(100 / portTICK_PERIOD_MS);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
 
     if (bno.dynamic_calibration_disable(BNO08xCalSel::all))
     {
