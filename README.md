@@ -1,6 +1,6 @@
 # ESP32 BNO08x Calibration
 
-This project tests the calibration feature of the BNO08x library using an ESP32.
+This project tests the calibration feature of the BNO08x library using an ESP32. For more details, visit the [GitHub repository](https://github.com/myles-parfeniuk/esp32_BNO08x).
 
 ## Summary
 
